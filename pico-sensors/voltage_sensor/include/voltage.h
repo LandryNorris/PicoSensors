@@ -4,7 +4,8 @@
 
 #include <stdint.h>
 
-void initializeVoltage();
+void initializeVoltageSingleShot();
+void initializeVoltageDMA();
 
 /**
  *
@@ -12,6 +13,8 @@ void initializeVoltage();
  * @return whether the selection was applied
  */
 bool selectPin(const uint8_t index);
+
+uint16_t readVoltageSingleShot();
 
 uint8_t* getSampleBuffer();
 

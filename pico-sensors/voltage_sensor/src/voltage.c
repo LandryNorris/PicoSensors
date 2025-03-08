@@ -21,7 +21,22 @@ void voltageDmaHandler() {
     dma_channel_acknowledge_irq0(channel);
 }
 
-void initializeVoltage() {
+void initializeVoltageSingleShot() {
+    adc_gpio_init(ANALOG_1_PIN);
+    adc_gpio_init(ANALOG_2_PIN);
+    adc_gpio_init(ANALOG_3_PIN);
+
+    adc_init();
+    adc_set_temp_sensor_enabled(true);
+
+    adc_select_input(0);
+}
+
+uint16_t readVoltageSingleShot() {
+    return adc_read();
+}
+
+void initializeVoltageDMA() {
     adc_gpio_init(ANALOG_1_PIN);
     adc_gpio_init(ANALOG_2_PIN);
     adc_gpio_init(ANALOG_3_PIN);
@@ -30,7 +45,7 @@ void initializeVoltage() {
     adc_set_temp_sensor_enabled(true);
 
     adc_set_clkdiv(0); // run at full speed
-    adc_select_input(ANALOG_1_PIN);
+    adc_select_input(0);
     adc_fifo_setup(
         true,    // Write each completed conversion to the sample FIFO
         true,    // Enable DMA data request (DREQ)
@@ -68,7 +83,7 @@ bool selectPin(const uint8_t index) {
     if (index >= 3) {
         return false;
     }
-    adc_select_input(ADC_BASE_PIN + index);
+    adc_select_input(index);
     return true;
 }
 
