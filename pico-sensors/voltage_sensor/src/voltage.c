@@ -12,13 +12,19 @@ static constexpr uint32_t SAMPLE_BUFFER_SIZE = 1000;
 
 uint8_t sampleBuffer[SAMPLE_BUFFER_SIZE];
 
-void initializeVoltage() {
-    adc_init();
-    adc_set_temp_sensor_enabled(true);
+uint32_t counter = 0;
 
+void voltageDmaHandler() {
+    counter++;
+}
+
+void initializeVoltage() {
     adc_gpio_init(ANALOG_1_PIN);
     adc_gpio_init(ANALOG_2_PIN);
     adc_gpio_init(ANALOG_3_PIN);
+
+    adc_init();
+    adc_set_temp_sensor_enabled(true);
 
     adc_set_clkdiv(0); // run at full speed
     adc_select_input(ANALOG_1_PIN);
@@ -34,8 +40,15 @@ void initializeVoltage() {
     const uint channel = dma_claim_unused_channel(true);
     dma_channel_config cfg = dma_channel_get_default_config(channel);
 
+    channel_config_set_transfer_data_size(&cfg, DMA_SIZE_8);
+    channel_config_set_read_increment(&cfg, false);
+    channel_config_set_write_increment(&cfg, true);
+
     // Pace transfers based on availability of ADC samples
     channel_config_set_dreq(&cfg, DREQ_ADC);
+    dma_channel_set_irq0_enabled(channel, true);
+
+    irq_set_exclusive_handler(DMA_IRQ_0, voltageDmaHandler);
 
     dma_channel_configure(channel, &cfg,
         sampleBuffer,
@@ -44,11 +57,9 @@ void initializeVoltage() {
         true
     );
 
-    dma_channel_set_irq0_enabled(channel, true);
-
     adc_run(true);
 
-    adc_fifo_setup(true, true, 1, false, true);
+    dma_channel_wait_for_finish_blocking(channel);
 }
 
 bool selectPin(const uint8_t index) {
@@ -61,4 +72,12 @@ bool selectPin(const uint8_t index) {
 
 uint8_t* getSampleBuffer() {
     return sampleBuffer;
+}
+
+uint16_t readVoltageImmediately() {
+    return adc_read();
+}
+
+float sampleToVolts(const uint16_t sample) {
+    return (float) sample * 3.3f / 4096.0f;
 }

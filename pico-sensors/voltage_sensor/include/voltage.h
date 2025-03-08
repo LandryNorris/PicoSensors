@@ -15,4 +15,8 @@ bool selectPin(const uint8_t index);
 
 uint8_t* getSampleBuffer();
 
+uint16_t readVoltageImmediately();
+
+float sampleToVolts(const uint16_t sample);
+
 #endif //VOLTAGE_H
