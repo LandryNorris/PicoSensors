@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <voltage.h>
 #include <hardware/gpio.h>
+#include <pico/stdio.h>
 #include <pico/stdio_usb.h>
 
 void initLed() {
@@ -12,8 +14,11 @@ int main(void) {
 
     initLed();
 
-    gpio_put(PICO_DEFAULT_LED_PIN, 1);
-    printf("Hello, World!\n");
+    initializeVoltage();
 
-    while (1) {}
+    gpio_put(PICO_DEFAULT_LED_PIN, 1);
+
+    while (1) {
+
+    }
 }
