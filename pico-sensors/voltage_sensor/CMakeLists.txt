@@ -10,3 +10,4 @@ target_include_directories(voltage_sensor PUBLIC ${CMAKE_CURRENT_LIST_DIR}/inclu
 target_link_libraries(voltage_sensor PUBLIC hardware_adc hardware_dma)
 
 pico_enable_stdio_usb(voltage_sensor ON)
+pico_enable_stdio_uart(voltage_sensor OFF)
