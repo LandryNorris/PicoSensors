@@ -12,10 +12,13 @@ static constexpr uint32_t SAMPLE_BUFFER_SIZE = 1000;
 
 uint8_t sampleBuffer[SAMPLE_BUFFER_SIZE];
 
+static uint channel;
+
 uint32_t counter = 0;
 
 void voltageDmaHandler() {
     counter++;
+    dma_channel_acknowledge_irq0(channel);
 }
 
 void initializeVoltage() {
@@ -37,7 +40,7 @@ void initializeVoltage() {
     );
 
     // DMA setup
-    const uint channel = dma_claim_unused_channel(true);
+    channel = dma_claim_unused_channel(true);
     dma_channel_config cfg = dma_channel_get_default_config(channel);
 
     channel_config_set_transfer_data_size(&cfg, DMA_SIZE_8);
@@ -49,6 +52,7 @@ void initializeVoltage() {
     dma_channel_set_irq0_enabled(channel, true);
 
     irq_set_exclusive_handler(DMA_IRQ_0, voltageDmaHandler);
+    irq_set_enabled(DMA_IRQ_0, true);
 
     dma_channel_configure(channel, &cfg,
         sampleBuffer,
@@ -58,8 +62,6 @@ void initializeVoltage() {
     );
 
     adc_run(true);
-
-    dma_channel_wait_for_finish_blocking(channel);
 }
 
 bool selectPin(const uint8_t index) {
