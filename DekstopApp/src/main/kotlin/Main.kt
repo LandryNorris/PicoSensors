@@ -9,6 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import io.github.landrynorris.logic.UsbDeviceDetector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 @Preview
@@ -25,6 +29,13 @@ fun App() {
 }
 
 fun main() = application {
+    CoroutineScope(Dispatchers.IO).launch {
+        UsbDeviceDetector.devices.collect {
+            println("Device list updated! $it")
+        }
+    }.invokeOnCompletion {
+        println("Stopping listening")
+    }
     Window(onCloseRequest = ::exitApplication) {
         App()
     }
