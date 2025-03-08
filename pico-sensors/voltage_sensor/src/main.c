@@ -23,5 +23,7 @@ int main(void) {
     while (1) {
         const uint16_t counts = readVoltageSingleShot();
         currentVoltage = sampleToVolts(counts);
+
+        printf("V: %f\n", currentVoltage);
     }
 }
