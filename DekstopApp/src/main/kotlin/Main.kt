@@ -1,5 +1,7 @@
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.arkivanov.decompose.DefaultComponentContext
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.landrynorris.logic.SensorDetector
 import io.github.landrynorris.logic.SensorDetector.beginDetection
 import io.github.landrynorris.logic.logic.RootComponent
@@ -9,7 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 fun main() = application {
-    val rootComponent = RootComponent()
+    val lifecycle = LifecycleRegistry()
+
+    val rootComponent = RootComponent(DefaultComponentContext(lifecycle))
+
     CoroutineScope(Dispatchers.IO).launch {
         SensorDetector.sensorFlow.collect {
             println("Sensor detected! $it")

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,14 +20,15 @@ fun RootScreen(logic: RootLogic) {
 
     Row {
         for(sensor in state.sensors) {
-            Sensor(sensor)
+            Sensor(sensor, onClick = { logic.selectDevice(sensor.serialNumber) })
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Sensor(sensorState: SensorState) {
-    Card {
+fun Sensor(sensorState: SensorState, onClick: () -> Unit) {
+    Card(onClick = onClick) {
         Column(modifier = Modifier.padding(10.dp)) {
             Text(sensorState.serialNumber)
             Text(sensorState.path)
