@@ -10,6 +10,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+const val APP_NAME = "Sensor Client"
+
 fun main() = application {
     val lifecycle = LifecycleRegistry()
 
@@ -24,7 +26,10 @@ fun main() = application {
     }
     beginDetection()
     rootComponent.beginDetectingDevices()
-    Window(onCloseRequest = ::exitApplication) {
+    Window(
+        title = APP_NAME,
+        onCloseRequest = ::exitApplication
+    ) {
         RootScreen(rootComponent)
     }
 }

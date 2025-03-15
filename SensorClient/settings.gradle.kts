@@ -13,4 +13,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "DekstopApp"
+rootProject.name = "SensorClient"
