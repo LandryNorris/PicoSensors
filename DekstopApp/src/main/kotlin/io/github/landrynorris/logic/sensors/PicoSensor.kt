@@ -18,7 +18,12 @@ fun sensorFromLine(line: String, port: SerialPort): PicoSensor {
 }
 
 suspend fun SerialPort.awaitKnownType(timeout: Duration): PicoSensor {
-    openPort()
+    val success = openPort()
+
+    if(!success) {
+        return UnknownPicoSensor(this)
+    }
+
     val maybeSensor = withTimeoutOrNull(timeout) {
         linesFlow().first()
     }
