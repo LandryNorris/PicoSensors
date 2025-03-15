@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 interface DeviceScreenLogic {
     fun beginPollingData()
     fun stopPollingData()
+
+    fun backPessed()
 }
 
 // TODO(Landry): Convert to a navigation library, such as Decompose
@@ -27,5 +29,9 @@ abstract class DeviceScreenComponent(
                 onBack()
             }
         }
+    }
+
+    override fun backPessed() {
+        onBack()
     }
 }
