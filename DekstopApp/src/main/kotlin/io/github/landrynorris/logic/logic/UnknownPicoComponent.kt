@@ -5,4 +5,5 @@ import io.github.landrynorris.logic.sensors.UnknownPicoSensor
 
 class UnknownPicoComponent(sensor: UnknownPicoSensor, onBack: () -> Unit, context: ComponentContext): DeviceScreenComponent(sensor, onBack, context) {
     override fun beginPollingData() {}
+    override fun stopPollingData() {}
 }

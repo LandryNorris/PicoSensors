@@ -6,14 +6,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+interface DeviceScreenLogic {
+    fun beginPollingData()
+    fun stopPollingData()
+}
+
 // TODO(Landry): Convert to a navigation library, such as Decompose
 abstract class DeviceScreenComponent(
     val sensor: PicoSensor,
     val onBack: () -> Unit,
     context: ComponentContext
-): ComponentContext by context {
+): ComponentContext by context, DeviceScreenLogic {
     val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     val serialNumber get() = sensor.serialDevice.serialNumber
-
-    abstract fun beginPollingData()
 }
