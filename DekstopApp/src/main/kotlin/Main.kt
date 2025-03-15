@@ -9,7 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import io.github.landrynorris.logic.UsbDeviceDetector
+import io.github.landrynorris.logic.SensorDetector
+import io.github.landrynorris.logic.SensorDetector.beginDetection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,12 +31,13 @@ fun App() {
 
 fun main() = application {
     CoroutineScope(Dispatchers.IO).launch {
-        UsbDeviceDetector.devices.collect {
-            println("Device list updated! $it")
+        SensorDetector.sensorFlow.collect {
+            println("Sensor detected! $it")
         }
     }.invokeOnCompletion {
         println("Stopping listening")
     }
+    beginDetection()
     Window(onCloseRequest = ::exitApplication) {
         App()
     }
