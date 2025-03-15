@@ -13,9 +13,10 @@ class VoltageComponent(sensor: VoltageSensor, onBack: () -> Unit, context: Compo
     override val state = MutableStateFlow(VoltageState(0.0))
     private var dataCollectionJob: Job? = null
 
+    private val voltageSensor get() = sensor as VoltageSensor
+
     override fun beginPollingData() {
-        dataCollectionJob = sensor.serialDevice.linesFlow.onEach {
-            val voltage = parseVoltageReading(it) ?: return@onEach
+        dataCollectionJob = voltageSensor.dataFlow.onEach { voltage ->
             state.update { state -> state.copy(currentVoltage = voltage) }
         }.launchIn(coroutineScope)
     }
