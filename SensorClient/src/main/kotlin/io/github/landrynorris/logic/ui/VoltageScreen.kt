@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,13 @@ fun VoltageScreen(logic: VoltageLogic) {
         ) {
             VoltageText(state.currentVoltage)
 
+            PlayPauseButton(state.isGraphRunning, onClick = {
+                if(state.isGraphRunning) {
+                    logic.pauseGraph()
+                } else {
+                    logic.resumeGraph()
+                }
+            })
             VoltageGraph(state.figure)
         }
     }
@@ -58,5 +67,15 @@ fun VoltageText(voltage: Double) {
 fun VoltageGraph(figure: Plot) {
     PlotPanel(figure = figure, modifier = Modifier.fillMaxSize()) {
         println("Message: $it")
+    }
+}
+
+@Composable
+fun PlayPauseButton(isPlaying: Boolean, onClick: () -> Unit) {
+    // the buttons show what will happen when pressed, which is the opposite of current
+    val icon = if(isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow
+
+    IconButton(onClick = onClick) {
+        Icon(icon, contentDescription = if(isPlaying) "Pause" else "Play")
     }
 }

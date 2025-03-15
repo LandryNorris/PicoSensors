@@ -18,6 +18,9 @@ const val NUM_READINGS_STORED = 5000
 
 interface VoltageLogic: DeviceScreenLogic {
     val state: StateFlow<VoltageState>
+
+    fun pauseGraph()
+    fun resumeGraph()
 }
 
 class VoltageComponent(sensor: VoltageSensor, onBack: () -> Unit, context: ComponentContext): VoltageLogic, DeviceScreenComponent(sensor, onBack, context) {
@@ -46,6 +49,11 @@ class VoltageComponent(sensor: VoltageSensor, onBack: () -> Unit, context: Compo
 
     private fun submitReading(value: Double) {
         state.update {
+            if(!it.isGraphRunning) {
+                // clear the list
+                return@update it.copy(readings = listOf())
+            }
+
             val timestamp = Clock.System.now()
             val newValue = VoltageReading(value, timestamp)
 
@@ -70,8 +78,20 @@ class VoltageComponent(sensor: VoltageSensor, onBack: () -> Unit, context: Compo
         p += xlab("Timestamp") + ylab("Voltage (V)") + ylim(listOf(0, 3.3))
         return p
     }
+
+    override fun pauseGraph() {
+        state.update { it.copy(isGraphRunning = false) }
+    }
+
+    override fun resumeGraph() {
+        state.update { it.copy(isGraphRunning = true) }
+    }
 }
 
 data class VoltageReading(val value: Double, val timestamp: Instant)
 
-data class VoltageState(val currentVoltage: Double, val readings: List<VoltageReading>, val figure: Plot)
+data class VoltageState(val currentVoltage: Double,
+                        val readings: List<VoltageReading>,
+                        val figure: Plot,
+                        val isGraphRunning: Boolean = true
+)
