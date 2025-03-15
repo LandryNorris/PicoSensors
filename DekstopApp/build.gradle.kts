@@ -23,6 +23,8 @@ dependencies {
     implementation(compose.desktop.currentOs)
 
     implementation("com.fazecast:jSerialComm:2.11.0")
+    implementation("com.arkivanov.decompose:decompose:3.3.0")
+    implementation("com.arkivanov.decompose:extensions-compose:3.3.0")
 }
 
 compose.desktop {
