@@ -7,6 +7,8 @@ import kotlin.time.Duration
 
 interface PicoSensor {
     val serialDevice: PicoSerialDevice
+
+    val readableName: String
 }
 
 fun sensorFromLine(line: String, port: PicoSerialDevice): PicoSensor {

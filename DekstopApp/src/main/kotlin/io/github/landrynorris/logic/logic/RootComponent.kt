@@ -98,10 +98,10 @@ sealed interface SensorConfig {
 }
 
 fun PicoSensor.toSensorState(): SensorState {
-    return SensorState(serialDevice.serialNumber, serialDevice.systemPortPath)
+    return SensorState(serialDevice.serialNumber, serialDevice.systemPortPath, readableName)
 }
 
-data class SensorState(val serialNumber: String, val path: String)
+data class SensorState(val serialNumber: String, val path: String, val name: String)
 
 data class RootState(
     val activeComponent: DeviceScreenComponent? = null,
