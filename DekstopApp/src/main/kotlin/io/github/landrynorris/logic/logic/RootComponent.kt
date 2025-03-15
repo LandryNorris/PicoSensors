@@ -29,10 +29,10 @@ class RootComponent(context: ComponentContext): ComponentContext by context, Roo
             SensorDetector.sensorFlow.collect { sensors ->
                 state.update { state ->
                     val remainingComponents = state.currentComponents.filter {
-                        sensors.any { sensor -> sensor.port.serialNumber == it.serialNumber }
+                        sensors.any { sensor -> sensor.serialDevice.serialNumber == it.serialNumber }
                     }
                     val newComponents = sensors.filter { sensor ->
-                        state.currentComponents.none { it.serialNumber == sensor.port.serialNumber }
+                        state.currentComponents.none { it.serialNumber == sensor.serialDevice.serialNumber }
                     }.map {
                         createComponentForSensor(sensor = it)
                     }
@@ -60,15 +60,15 @@ class RootComponent(context: ComponentContext): ComponentContext by context, Roo
 
     private fun createComponentForSensor(sensor: PicoSensor): DeviceScreenComponent {
         return when(sensor) {
-            is VoltageSensor -> VoltageComponent(sensor, ::onScreenBack, childContext("V ${sensor.port.serialNumber}"))
-            is UnknownPicoSensor -> UnknownPicoComponent(sensor, ::onScreenBack, childContext("U ${sensor.port.serialNumber}"))
+            is VoltageSensor -> VoltageComponent(sensor, ::onScreenBack, childContext("V ${sensor.serialDevice.serialNumber}"))
+            is UnknownPicoSensor -> UnknownPicoComponent(sensor, ::onScreenBack, childContext("U ${sensor.serialDevice.serialNumber}"))
             else -> error("No component defined for sensor $sensor")
         }
     }
 }
 
 fun PicoSensor.toSensorState(): SensorState {
-    return SensorState(port.serialNumber, port.systemPortPath)
+    return SensorState(serialDevice.serialNumber, serialDevice.systemPortPath)
 }
 
 data class SensorState(val serialNumber: String, val path: String)

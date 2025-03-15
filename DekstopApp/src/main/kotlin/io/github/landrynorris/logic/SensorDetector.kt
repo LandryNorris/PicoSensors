@@ -26,14 +26,13 @@ object SensorDetector {
     private suspend fun runDetection() {
         UsbDeviceDetector.devices.collect { devices ->
             mutableSensorFlow.update { sensors ->
-                val remainingSensors = sensors.filter { it.port.isOpen }
+                val remainingSensors = sensors.filter { it.serialDevice.isOpen }
 
                 val newSensors = devices.filter { device ->
                     sensors.none { sensor ->
-                        sensor.port.serialNumber == device.serialNumber
+                        sensor.serialDevice.serialNumber == device.serialNumber
                     }
                 }.map {
-                    it.addDataListener(it.shutdownListener())
                     it.awaitKnownType(200.milliseconds)
                 }
 

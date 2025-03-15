@@ -1,8 +1,7 @@
 package io.github.landrynorris.logic.sensors
 
-import com.fazecast.jSerialComm.SerialPort
-import io.github.landrynorris.logic.linesFlow
+import io.github.landrynorris.logic.PicoSerialDevice
 
-class VoltageSensor(override val port: SerialPort): PicoSensor {
-    val dataFlow = port.linesFlow()
+class VoltageSensor(override val serialDevice: PicoSerialDevice): PicoSensor {
+    val dataFlow = serialDevice.linesFlow
 }

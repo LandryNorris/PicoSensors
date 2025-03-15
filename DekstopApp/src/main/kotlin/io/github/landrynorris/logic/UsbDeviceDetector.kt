@@ -11,7 +11,7 @@ const val TARGET_PRODUCT_ID = 0x0009
 
 const val POLLING_INTERVAL_MS = 1000L
 
-fun List<SerialPort>.hasSameDevices(other: List<SerialPort>): Boolean {
+fun List<SerialPort>.hasSameDevices(other: List<PicoSerialDevice>): Boolean {
     if(size != other.size) return false
 
     return zip(other).all { it.first.serialNumber == it.second.serialNumber }
@@ -20,8 +20,8 @@ fun List<SerialPort>.hasSameDevices(other: List<SerialPort>): Boolean {
 object UsbDeviceDetector {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val mutableDevices = MutableSharedFlow<List<SerialPort>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    private var lastList: List<SerialPort> = emptyList()
+    private val mutableDevices = MutableSharedFlow<List<PicoSerialDevice>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private var lastList: List<PicoSerialDevice> = emptyList()
     val devices = mutableDevices.asSharedFlow()
 
     init {
@@ -39,13 +39,27 @@ object UsbDeviceDetector {
     private suspend fun pollUsbDevices() {
         val serialPorts = SerialPort.getCommPorts()
 
-        val picoDevices = serialPorts
+        val picoDevicePorts = serialPorts
             .filter { it.vendorID == TARGET_VENDOR_ID && it.productID == TARGET_PRODUCT_ID }
 
-        if (!picoDevices.hasSameDevices(lastList)) {
-            mutableDevices.emit(picoDevices)
-            lastList = picoDevices
+        if (!picoDevicePorts.hasSameDevices(lastList)) {
+            // We need to ensure we don't lose the reference to our old picos
+            val remaining = lastList.filter {
+                picoDevicePorts.any { port -> port.serialNumber == it.serialNumber }
+            }
+
+            val new = picoDevicePorts.filter { port ->
+                lastList.none { it.serialNumber == port.serialNumber }
+            }.map { it.toPicoSerialDevice() }
+
+            lastList = remaining + new
+
+            mutableDevices.tryEmit(lastList)
         }
         delay(POLLING_INTERVAL_MS)
     }
+}
+
+private fun SerialPort.toPicoSerialDevice(): PicoSerialDevice {
+    return PicoSerialDevice(this)
 }

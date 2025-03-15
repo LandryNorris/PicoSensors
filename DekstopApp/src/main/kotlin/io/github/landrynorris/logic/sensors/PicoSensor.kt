@@ -1,31 +1,24 @@
 package io.github.landrynorris.logic.sensors
 
-import com.fazecast.jSerialComm.SerialPort
-import io.github.landrynorris.logic.linesFlow
+import io.github.landrynorris.logic.PicoSerialDevice
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration
 
 interface PicoSensor {
-    val port: SerialPort
+    val serialDevice: PicoSerialDevice
 }
 
-fun sensorFromLine(line: String, port: SerialPort): PicoSensor {
+fun sensorFromLine(line: String, port: PicoSerialDevice): PicoSensor {
     return when(val label = line.substringBefore(":")) {
         "V" -> VoltageSensor(port)
         else -> error("Unknown sensor type: $label")
     }
 }
 
-suspend fun SerialPort.awaitKnownType(timeout: Duration): PicoSensor {
-    val success = openPort()
-
-    if(!success) {
-        return UnknownPicoSensor(this)
-    }
-
+suspend fun PicoSerialDevice.awaitKnownType(timeout: Duration): PicoSensor {
     val maybeSensor = withTimeoutOrNull(timeout) {
-        linesFlow().first()
+        linesFlow.first()
     }
 
     if(maybeSensor == null) {

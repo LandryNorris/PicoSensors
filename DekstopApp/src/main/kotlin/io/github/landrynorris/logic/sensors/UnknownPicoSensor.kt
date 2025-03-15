@@ -1,5 +1,5 @@
 package io.github.landrynorris.logic.sensors
 
-import com.fazecast.jSerialComm.SerialPort
+import io.github.landrynorris.logic.PicoSerialDevice
 
-class UnknownPicoSensor(override val port: SerialPort): PicoSensor
+class UnknownPicoSensor(override val serialDevice: PicoSerialDevice): PicoSensor

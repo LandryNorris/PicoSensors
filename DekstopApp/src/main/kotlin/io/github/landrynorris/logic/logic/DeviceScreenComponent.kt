@@ -13,7 +13,7 @@ abstract class DeviceScreenComponent(
     context: ComponentContext
 ): ComponentContext by context {
     val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    val serialNumber get() = sensor.port.serialNumber
+    val serialNumber get() = sensor.serialDevice.serialNumber
 
     abstract fun beginPollingData()
 }
