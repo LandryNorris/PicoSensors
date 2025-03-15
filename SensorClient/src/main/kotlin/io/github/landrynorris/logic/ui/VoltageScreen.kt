@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.landrynorris.logic.logic.VoltageLogic
+import org.jetbrains.letsPlot.intern.Plot
+import org.jetbrains.letsPlot.skia.compose.PlotPanel
 
 @Composable
 fun VoltageScreen(logic: VoltageLogic) {
@@ -41,6 +43,8 @@ fun VoltageScreen(logic: VoltageLogic) {
                 .padding(16.dp),
         ) {
             VoltageText(state.currentVoltage)
+
+            VoltageGraph(state.figure)
         }
     }
 }
@@ -48,4 +52,11 @@ fun VoltageScreen(logic: VoltageLogic) {
 @Composable
 fun VoltageText(voltage: Double) {
     Text("Voltage: ${voltage}V")
+}
+
+@Composable
+fun VoltageGraph(figure: Plot) {
+    PlotPanel(figure = figure, modifier = Modifier.fillMaxSize()) {
+        println("Message: $it")
+    }
 }

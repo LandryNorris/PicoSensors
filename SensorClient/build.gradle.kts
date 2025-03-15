@@ -27,6 +27,14 @@ dependencies {
     implementation("com.arkivanov.decompose:decompose:3.3.0")
     implementation("com.arkivanov.decompose:extensions-compose:3.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.1")
+
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-kernel:4.9.3")
+    implementation("org.jetbrains.lets-plot:lets-plot-common:4.5.2")
+    implementation("org.jetbrains.lets-plot:platf-awt:4.5.2")
+
+    implementation("org.jetbrains.lets-plot:lets-plot-compose:2.1.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 }
 
 compose.desktop {
