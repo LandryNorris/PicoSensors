@@ -12,15 +12,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.landrynorris.logic.logic.RootLogic
+import io.github.landrynorris.logic.logic.RootState
 import io.github.landrynorris.logic.logic.SensorState
+import io.github.landrynorris.logic.logic.VoltageComponent
 
 @Composable
 fun RootScreen(logic: RootLogic) {
     val state by logic.state.collectAsState()
 
+    val activeComponent = state.activeComponent
+
+    if(activeComponent == null) {
+        SelectDeviceScreen(state, logic::selectDevice)
+    } else {
+        when(activeComponent) {
+            is VoltageComponent -> VoltageScreen(activeComponent)
+        }
+    }
+}
+
+@Composable
+fun SelectDeviceScreen(state: RootState, selectDevice: (String) -> Unit) {
     Row {
         for(sensor in state.sensors) {
-            Sensor(sensor, onClick = { logic.selectDevice(sensor.serialNumber) })
+            Sensor(sensor, onClick = { selectDevice(sensor.serialNumber) })
         }
     }
 }
