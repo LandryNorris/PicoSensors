@@ -5,6 +5,7 @@ import io.github.landrynorris.logic.sensors.PicoSensor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 interface DeviceScreenLogic {
     fun beginPollingData()
@@ -19,4 +20,12 @@ abstract class DeviceScreenComponent(
 ): ComponentContext by context, DeviceScreenLogic {
     val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     val serialNumber get() = sensor.serialDevice.serialNumber
+
+    init {
+        sensor.serialDevice.addCloseListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                onBack()
+            }
+        }
+    }
 }

@@ -26,6 +26,7 @@ dependencies {
     implementation("com.fazecast:jSerialComm:2.11.0")
     implementation("com.arkivanov.decompose:decompose:3.3.0")
     implementation("com.arkivanov.decompose:extensions-compose:3.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.10.1")
 }
 
 compose.desktop {

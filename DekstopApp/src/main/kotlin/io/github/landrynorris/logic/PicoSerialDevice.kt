@@ -5,8 +5,13 @@ import com.fazecast.jSerialComm.SerialPortDataListener
 import com.fazecast.jSerialComm.SerialPortEvent
 import kotlinx.coroutines.flow.*
 
+fun interface SensorCloseListener {
+    fun onClosed()
+}
+
 class PicoSerialDevice(serialPort: SerialPort) {
     private val dataFlow = MutableSharedFlow<ByteArray>(extraBufferCapacity = 128)
+    private val closeListeners = mutableListOf<SensorCloseListener>()
 
     val serialNumber = serialPort.serialNumber
     val systemPortPath = serialPort.systemPortPath
@@ -34,6 +39,7 @@ class PicoSerialDevice(serialPort: SerialPort) {
                 event ?: return
 
                 if(event.eventType == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
+                    closeListeners.forEach { it.onClosed() }
                     serialPort.closePort()
                     isOpen = false
                 } else if(event.eventType == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
@@ -42,6 +48,10 @@ class PicoSerialDevice(serialPort: SerialPort) {
                 }
             }
         })
+    }
+
+    fun addCloseListener(closeListener: SensorCloseListener) {
+        closeListeners.add(closeListener)
     }
 
     fun onDataAvailable(data: ByteArray) {
