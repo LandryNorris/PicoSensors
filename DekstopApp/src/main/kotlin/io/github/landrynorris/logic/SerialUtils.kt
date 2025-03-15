@@ -41,3 +41,15 @@ fun SerialPort.dataFlow() = callbackFlow {
     })
     awaitClose {  }
 }
+
+fun SerialPort.shutdownListener() = object: SerialPortDataListener {
+    override fun getListeningEvents(): Int {
+        return SerialPort.LISTENING_EVENT_PORT_DISCONNECTED
+    }
+
+    override fun serialEvent(event: SerialPortEvent?) {
+        if(event?.eventType == SerialPort.LISTENING_EVENT_PORT_DISCONNECTED) {
+            closePort()
+        }
+    }
+}
