@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,15 +51,15 @@ fun SensorCard(sensorState: SensorState, onClick: () -> Unit) {
             .padding(6.dp)
             .clickable(onClick = onClick)
             .background(Color.White),
-        elevation = 10.dp
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = sensorState.name, style = MaterialTheme.typography.body1)
-            Text(text = "S/N: ${sensorState.serialNumber}", style = MaterialTheme.typography.subtitle2)
-            Text(text = "Path: ${sensorState.path}", style = MaterialTheme.typography.caption)
+            Text(text = sensorState.name, style = MaterialTheme.typography.headlineSmall)
+            Text(text = "S/N: ${sensorState.serialNumber}", style = MaterialTheme.typography.labelSmall)
+            Text(text = "Path: ${sensorState.path}", style = MaterialTheme.typography.labelSmall)
         }
     }
 }

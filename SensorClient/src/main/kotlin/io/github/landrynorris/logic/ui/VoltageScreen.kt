@@ -3,7 +3,7 @@ package io.github.landrynorris.logic.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Pause
@@ -15,6 +15,7 @@ import io.github.landrynorris.logic.logic.VoltageLogic
 import org.jetbrains.letsPlot.intern.Plot
 import org.jetbrains.letsPlot.skia.compose.PlotPanel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VoltageScreen(logic: VoltageLogic) {
     val state by logic.state.collectAsState()
